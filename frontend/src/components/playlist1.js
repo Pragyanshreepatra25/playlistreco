@@ -88,168 +88,152 @@ function PlaylistDisplay({ emotion, languages }) {
 
   const getEmotionColor = (emotion) => {
     const colorMap = {
-      'happy': '#28a745',
-      'sad': '#6c757d',
-      'angry': '#dc3545',
-      'fearful': '#ffc107',
-      'disgusted': '#6f42c1',
-      'surprised': '#fd7e14',
-      'neutral': '#17a2b8'
+      'happy': 'from-green-400 to-green-600',
+      'sad': 'from-gray-400 to-gray-600',
+      'angry': 'from-red-400 to-red-600',
+      'fearful': 'from-yellow-400 to-yellow-600',
+      'disgusted': 'from-purple-400 to-purple-600',
+      'surprised': 'from-orange-400 to-orange-600',
+      'neutral': 'from-blue-400 to-blue-600'
     };
-    return colorMap[emotion] || '#007bff';
+    return colorMap[emotion] || 'from-indigo-400 to-indigo-600';
+  };
+
+  const getEmotionBgColor = (emotion) => {
+    const colorMap = {
+      'happy': 'bg-green-50 border-green-200',
+      'sad': 'bg-gray-50 border-gray-200',
+      'angry': 'bg-red-50 border-red-200',
+      'fearful': 'bg-yellow-50 border-yellow-200',
+      'disgusted': 'bg-purple-50 border-purple-200',
+      'surprised': 'bg-orange-50 border-orange-200',
+      'neutral': 'bg-blue-50 border-blue-200'
+    };
+    return colorMap[emotion] || 'bg-indigo-50 border-indigo-200';
   };
 
   return (
-    <div style={{ marginTop: '30px' }}>
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        marginBottom: '20px'
-      }}>
-        <h3 style={{ 
-          margin: 0, 
-          fontSize: '24px',
-          color: '#333'
-        }}>
-          {emotion && (
-            <>
-              {getEmotionEmoji(emotion)} Recommended Playlists for {emotion.charAt(0).toUpperCase() + emotion.slice(1)} Mood
-            </>
-          )}
-        </h3>
+    <div className="mt-xl">
+      {/* Header */}
+      <div className="text-center mb-xl">
+        {emotion && (
+          <div className="inline-flex items-center gap-md">
+            <div className={`w-16 h-16 bg-gradient-to-br ${getEmotionColor(emotion)} rounded-2xl flex items-center justify-center`}>
+              <span className="text-2xl">{getEmotionEmoji(emotion)}</span>
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-primary">
+                Recommended Playlists
+              </h2>
+              <p className="text-lg text-secondary">
+                Perfect for your {emotion.charAt(0).toUpperCase() + emotion.slice(1)} mood
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
+      {/* Loading State */}
       {loading && (
-        <div style={{ textAlign: 'center', padding: '40px' }}>
-          <div style={{
-            display: 'inline-block',
-            width: '40px',
-            height: '40px',
-            border: '4px solid #f3f3f3',
-            borderTop: '4px solid #007bff',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite'
-          }}></div>
-          <p style={{ marginTop: '10px', color: '#666' }}>Finding perfect playlists for you...</p>
+        <div className="text-center py-xl">
+          <div className="inline-flex flex-col items-center gap-md">
+            <div className="spinner"></div>
+            <p className="text-secondary font-medium">Finding perfect playlists for you...</p>
+          </div>
         </div>
       )}
 
+      {/* Error State */}
       {error && (
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '20px',
-          backgroundColor: '#f8d7da',
-          color: '#721c24',
-          borderRadius: '8px',
-          margin: '20px 0'
-        }}>
-          <p>{error}</p>
+        <div className="alert alert-error text-center">
+          <div className="flex items-center justify-center gap-sm">
+            <span>⚠️</span>
+            <span>{error}</span>
+          </div>
           <button 
             onClick={fetchPlaylists}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#dc3545',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
+            className="btn btn-danger btn-sm mt-sm"
           >
             Try Again
           </button>
         </div>
       )}
 
+      {/* Empty State */}
       {!loading && !error && playlists.length === 0 && emotion && (
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '40px',
-          backgroundColor: '#f8f9fa',
-          borderRadius: '8px',
-          border: '1px solid #dee2e6'
-        }}>
-          <p style={{ fontSize: '18px', color: '#6c757d', marginBottom: '10px' }}>
-            No playlists found for {emotion} mood in {languages.join(', ')}
-          </p>
-          <p style={{ color: '#6c757d' }}>
-            Try scanning your face again or check back later for more playlists!
-          </p>
+        <div className="card text-center py-xl">
+          <div className="inline-flex flex-col items-center gap-md">
+            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center">
+              <span className="text-3xl">🎵</span>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-700 mb-sm">
+                No playlists found
+              </h3>
+              <p className="text-gray-600 mb-md">
+                No playlists found for {emotion} mood in {languages.join(', ')}
+              </p>
+              <p className="text-sm text-gray-500">
+                Try scanning your face again or check back later for more playlists!
+              </p>
+            </div>
+          </div>
         </div>
       )}
 
+      {/* Playlist Grid */}
       {!loading && !error && playlists.length > 0 && (
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
-          gap: '20px',
-          padding: '20px 0'
-        }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
           {playlists.map((playlist) => (
-            <div key={playlist._id} style={{ 
-              border: '2px solid #e9ecef',
-              padding: '20px', 
-              borderRadius: '12px',
-              backgroundColor: '#ffffff',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-              cursor: 'pointer'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-5px)';
-              e.target.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-            }}
+            <div 
+              key={playlist._id} 
+              className="card hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              onClick={() => setCurrentPlaylist(playlist)}
             >
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
-                <span style={{ fontSize: '24px', marginRight: '10px' }}>
-                  {getEmotionEmoji(playlist.emotion)}
-                </span>
-                <h4 style={{ 
-                  margin: 0, 
-                  fontSize: '18px',
-                  color: '#333'
-                }}>
-                  {playlist.name}
-                </h4>
+              {/* Playlist Header */}
+              <div className="flex items-center gap-md mb-md">
+                <div className={`w-12 h-12 bg-gradient-to-br ${getEmotionColor(playlist.emotion)} rounded-xl flex items-center justify-center`}>
+                  <span className="text-xl">{getEmotionEmoji(playlist.emotion)}</span>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg text-primary group-hover:text-indigo-600 transition-colors">
+                    {playlist.name}
+                  </h3>
+                  <div className="flex items-center gap-sm">
+                    <span className={`px-2 py-1 text-xs font-semibold text-white bg-gradient-to-r ${getEmotionColor(playlist.emotion)} rounded-full`}>
+                      {playlist.emotion.toUpperCase()}
+                    </span>
+                  </div>
+                </div>
               </div>
               
-              <div style={{ marginBottom: '10px' }}>
-                <span style={{ 
-                  backgroundColor: getEmotionColor(playlist.emotion),
-                  color: 'white',
-                  padding: '4px 8px',
-                  borderRadius: '12px',
-                  fontSize: '12px',
-                  fontWeight: 'bold'
-                }}>
-                  {playlist.emotion.toUpperCase()}
-                </span>
+              {/* Playlist Info */}
+              <div className="space-y-sm mb-md">
+                <div className="flex items-center gap-sm text-sm text-secondary">
+                  <span>🌍</span>
+                  <span><strong>Language:</strong> {playlist.language}</span>
+                </div>
+                <div className="flex items-center gap-sm text-sm text-secondary">
+                  <span>🎵</span>
+                  <span><strong>Songs:</strong> {playlist.songs.length} tracks</span>
+                </div>
               </div>
               
-              <p style={{ margin: '8px 0', color: '#666' }}>
-                <strong>Language:</strong> {playlist.language}
-              </p>
-              <p style={{ margin: '8px 0', color: '#666' }}>
-                <strong>Songs:</strong> {playlist.songs.length} tracks
-              </p>
-              
+              {/* Sample Tracks */}
               {playlist.songs.length > 0 && (
-                <div style={{ marginTop: '15px' }}>
-                  <p style={{ fontSize: '14px', color: '#888', marginBottom: '8px' }}>
+                <div className="mb-md">
+                  <p className="text-sm font-medium text-gray-600 mb-sm">
                     Sample tracks:
                   </p>
-                  <div style={{ fontSize: '12px', color: '#666' }}>
+                  <div className="space-y-xs">
                     {playlist.songs.slice(0, 3).map((song, index) => (
-                      <div key={index} style={{ marginBottom: '4px' }}>
-                        • {song.title} - {song.artist}
+                      <div key={index} className="text-sm text-gray-600 flex items-center gap-sm">
+                        <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
+                        <span className="truncate">{song.title} - {song.artist}</span>
                       </div>
                     ))}
                     {playlist.songs.length > 3 && (
-                      <div style={{ color: '#999' }}>
+                      <div className="text-xs text-gray-500 italic">
                         ... and {playlist.songs.length - 3} more
                       </div>
                     )}
@@ -257,74 +241,53 @@ function PlaylistDisplay({ emotion, languages }) {
                 </div>
               )}
               
-              <button 
-                onClick={() => setCurrentPlaylist(playlist)}
-                style={{
-                  width: '100%',
-                  padding: '10px',
-                  backgroundColor: '#007bff',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  marginTop: '15px',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  transition: 'background-color 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = '#0056b3';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = '#007bff';
-                }}
-              >
-                🎵 Play Playlist
-              </button>
-              
-              {/* Quick YouTube access for first song */}
-              {playlist.songs.length > 0 && (playlist.songs[0].url?.includes('youtube.com') || playlist.songs[0].youtubeId) && (
+              {/* Action Buttons */}
+              <div className="space-y-sm">
+                {/* Main Play Button - Always YouTube */}
+                {playlist.songs.length > 0 && (playlist.songs[0].url?.includes('youtube.com') || playlist.songs[0].youtubeId) ? (
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const firstSong = playlist.songs[0];
+                      const youtubeUrl = firstSong.url || `https://www.youtube.com/watch?v=${firstSong.youtubeId}`;
+                      window.open(youtubeUrl, '_blank', 'noopener,noreferrer');
+                    }}
+                    className="btn btn-danger btn-full"
+                  >
+                    <span>📺</span>
+                    Play First Song on YouTube
+                  </button>
+                ) : (
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      alert(`🎵 "${playlist.name}"\n\nThis playlist doesn't have YouTube-enabled songs. Please check other playlists for YouTube integration.`);
+                    }}
+                    className="btn btn-secondary btn-full"
+                  >
+                    <span>🎵</span>
+                    Playlist Preview
+                  </button>
+                )}
+                
+                {/* Open Music Player */}
                 <button 
-                  onClick={() => {
-                    const firstSong = playlist.songs[0];
-                    const youtubeUrl = firstSong.url || `https://www.youtube.com/watch?v=${firstSong.youtubeId}`;
-                    window.open(youtubeUrl, '_blank', 'noopener,noreferrer');
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentPlaylist(playlist);
                   }}
-                  style={{
-                    width: '100%',
-                    padding: '8px',
-                    backgroundColor: '#ff0000',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    marginTop: '8px',
-                    fontSize: '12px',
-                    fontWeight: 'bold',
-                    transition: 'background-color 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = '#cc0000';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = '#ff0000';
-                  }}
+                  className="btn btn-primary btn-full btn-sm"
                 >
-                  📺 Play First Song on YouTube
+                  <span>🎧</span>
+                  Open Player
                 </button>
-              )}
+              </div>
             </div>
           ))}
         </div>
       )}
 
-      <style jsx>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
-
+      {/* Music Player Modal */}
       {currentPlaylist && (
         <MusicPlayer 
           playlist={currentPlaylist} 

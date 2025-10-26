@@ -108,77 +108,99 @@ function WebcamExpression({ onEmotionDetected }) {
   };
 
   return (
-    <div style={{ textAlign: 'center' }}>
-      <div style={{ position: 'relative', display: 'inline-block', marginBottom: '20px' }}>
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          width="640"
-          height="480"
-          onPlay={handleVideoPlay}
-          style={{ borderRadius: '8px', border: '2px solid #007bff' }}
-        />
-        <canvas 
-          ref={canvasRef} 
-          style={{ position: 'absolute', top: 0, left: 0 }}
-        />
+    <div className="text-center">
+      {/* Video Container */}
+      <div className="relative inline-block mb-lg">
+        <div className="relative rounded-xl overflow-hidden shadow-lg border-4 border-blue-300">
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            width="640"
+            height="480"
+            onPlay={handleVideoPlay}
+            className="block"
+          />
+          <canvas 
+            ref={canvasRef} 
+            className="absolute top-0 left-0 pointer-events-none"
+          />
+        </div>
+        
+        {/* Overlay Status */}
+        <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-white rounded-full px-md py-xs shadow-md border border-gray-200">
+          {!modelsLoaded && (
+            <span className="text-sm text-gray-600">Loading AI models...</span>
+          )}
+          {modelsLoaded && !isDetecting && (
+            <span className="text-sm text-green-600 font-medium">Ready to detect</span>
+          )}
+          {isDetecting && (
+            <span className="text-sm text-blue-600 font-medium">Analyzing...</span>
+          )}
+        </div>
       </div>
       
-      <div style={{ marginBottom: '20px' }}>
+      {/* Status Messages */}
+      <div className="space-y-md">
         {!modelsLoaded && (
-          <p style={{ color: '#666' }}>Loading face detection models...</p>
+          <div className="flex items-center justify-center gap-sm text-gray-600">
+            <div className="spinner"></div>
+            <span>Loading face detection models...</span>
+          </div>
         )}
         
         {modelsLoaded && !isDetecting && (
-          <div>
-            <p style={{ color: '#28a745', fontWeight: 'bold' }}>
-              📹 Camera ready! Look at the camera to detect your expression
-            </p>
+          <div className="space-y-sm">
+            <div className="flex items-center justify-center gap-sm text-green-600 font-semibold">
+              <span className="text-lg">📹</span>
+              <span>Camera ready! Look at the camera to detect your expression</span>
+            </div>
             <button 
               onClick={resetDetection}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: '#007bff',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                marginTop: '10px'
-              }}
+              className="btn btn-secondary btn-sm"
             >
+              <span>🔄</span>
               Reset Detection
             </button>
           </div>
         )}
         
         {isDetecting && (
-          <div>
-            <p style={{ color: '#ffc107', fontWeight: 'bold' }}>
-              🔍 Detecting emotion... ({detectionCount}/5)
-            </p>
-            <div style={{ 
-              width: '200px', 
-              height: '10px', 
-              backgroundColor: '#e9ecef', 
-              borderRadius: '5px',
-              margin: '10px auto',
-              overflow: 'hidden'
-            }}>
-              <div style={{
-                width: `${(detectionCount / 5) * 100}%`,
-                height: '100%',
-                backgroundColor: '#007bff',
-                transition: 'width 0.3s ease'
-              }}></div>
+          <div className="space-y-sm">
+            <div className="flex items-center justify-center gap-sm text-blue-600 font-semibold">
+              <span className="text-lg">🔍</span>
+              <span>Detecting emotion... ({detectionCount}/5)</span>
             </div>
+            
+            {/* Progress Bar */}
+            <div className="w-64 mx-auto">
+              <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
+                <div 
+                  className="bg-gradient-to-r from-blue-500 to-indigo-600 h-full transition-all duration-300 ease-out"
+                  style={{ width: `${(detectionCount / 5) * 100}%` }}
+                ></div>
+              </div>
+            </div>
+            
             {confidence > 0 && (
-              <p style={{ color: '#6c757d', fontSize: '14px' }}>
-                Confidence: {(confidence * 100).toFixed(1)}%
+              <p className="text-sm text-gray-600">
+                Confidence: <span className="font-semibold">{(confidence * 100).toFixed(1)}%</span>
               </p>
             )}
           </div>
         )}
+      </div>
+
+      {/* Instructions */}
+      <div className="mt-lg p-md bg-gray-50 rounded-lg border border-gray-200">
+        <h4 className="font-semibold text-gray-800 mb-sm">How it works:</h4>
+        <ul className="text-sm text-gray-600 space-y-xs text-left max-w-md mx-auto">
+          <li>• Position your face in the camera view</li>
+          <li>• The AI will analyze your facial expressions</li>
+          <li>• After 5 successful detections, your emotion will be identified</li>
+          <li>• Perfect playlists will be recommended based on your mood</li>
+        </ul>
       </div>
     </div>
   );

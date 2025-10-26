@@ -45,109 +45,98 @@ function Home({ setAuth }) {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <Navbar 
         user={user} 
         onLogout={handleLogout} 
         onLanguageChange={handleLanguageChange}
         selectedLanguages={selectedLanguages}
       />
-      <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-        <div style={{ 
-          backgroundColor: 'white', 
-          borderRadius: '12px', 
-          padding: '30px', 
-          boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-          marginBottom: '30px'
-        }}>
-          <h2 style={{ 
-            marginBottom: '20px', 
-            color: '#333',
-            fontSize: '28px',
-            textAlign: 'center'
-          }}>
-            Welcome, {user?.name}! 🎵
-          </h2>
-          
-          <div style={{ 
-            textAlign: 'center', 
-            marginBottom: '30px',
-            padding: '20px',
-            backgroundColor: '#e3f2fd',
-            borderRadius: '8px',
-            border: '1px solid #bbdefb'
-          }}>
-            <h3 style={{ color: '#1976d2', marginBottom: '10px' }}>
-              🎭 Scan Your Face Expression
-            </h3>
-            <p style={{ color: '#666', marginBottom: '20px' }}>
-              Let our AI detect your current mood and recommend the perfect playlists for you!
+      
+      <div className="container mx-auto px-lg py-xl">
+        {/* Welcome Section */}
+        <div className="card mb-xl">
+          <div className="card-header">
+            <h1 className="card-title">
+              Welcome back, {user?.name}! 🎵
+            </h1>
+            <p className="card-subtitle">
+              Let AI discover the perfect music for your mood
             </p>
+          </div>
+          
+          {/* Emotion Detection Section */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-lg mb-lg border border-blue-200">
+            <div className="text-center mb-lg">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-md">
+                <span className="text-2xl">🎭</span>
+              </div>
+              <h3 className="text-xl font-semibold text-blue-800 mb-sm">
+                AI Emotion Detection
+              </h3>
+              <p className="text-blue-600 max-w-2xl mx-auto">
+                Look at your camera and let our advanced AI analyze your facial expressions to recommend the perfect playlists for your current mood!
+              </p>
+            </div>
             
             <WebcamExpression onEmotionDetected={setDetectedEmotion} />
             
             {detectedEmotion && (
-              <div style={{ 
-                marginTop: '20px', 
-                padding: '15px',
-                backgroundColor: '#d4edda',
-                borderRadius: '8px',
-                border: '1px solid #c3e6cb'
-              }}>
-                <p style={{ 
-                  fontSize: '20px', 
-                  fontWeight: 'bold',
-                  color: '#155724',
-                  margin: 0
-                }}>
-                  🎯 Detected Emotion: {detectedEmotion.charAt(0).toUpperCase() + detectedEmotion.slice(1)}
-                </p>
+              <div className="mt-lg p-md bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center justify-center gap-sm">
+                  <span className="text-2xl">🎯</span>
+                  <p className="text-lg font-semibold text-green-800">
+                    Detected Emotion: {detectedEmotion.charAt(0).toUpperCase() + detectedEmotion.slice(1)}
+                  </p>
+                </div>
               </div>
             )}
           </div>
 
-          <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-            <button 
-              onClick={seedSamplePlaylists}
-              disabled={isSeeding}
-              style={{
-                padding: '12px 24px',
-                backgroundColor: isSeeding ? '#6c757d' : '#28a745',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: isSeeding ? 'not-allowed' : 'pointer',
-                fontSize: '16px',
-                fontWeight: 'bold',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-              }}
-            >
-              {isSeeding ? '⏳ Loading Sample Playlists...' : '🎵 Load Sample Playlists'}
-            </button>
-            <p style={{ 
-              fontSize: '14px', 
-              color: '#666', 
-              marginTop: '10px',
-              fontStyle: 'italic'
-            }}>
+          {/* Sample Data Section */}
+          <div className="text-center">
+            <div className="mb-lg">
+              <button 
+                onClick={seedSamplePlaylists}
+                disabled={isSeeding}
+                className="btn btn-success btn-lg"
+              >
+                {isSeeding ? (
+                  <>
+                    <div className="spinner"></div>
+                    Loading Sample Playlists...
+                  </>
+                ) : (
+                  <>
+                    <span>🎵</span>
+                    Load Sample Playlists
+                  </>
+                )}
+              </button>
+            </div>
+            
+            <p className="text-sm text-muted mb-md italic">
               Click this button to load sample playlists for testing the emotion-based recommendations
             </p>
-            <div style={{
-              marginTop: '15px',
-              padding: '10px',
-              backgroundColor: '#d1ecf1',
-              border: '1px solid #bee5eb',
-              borderRadius: '6px',
-              fontSize: '13px',
-              color: '#0c5460'
-            }}>
-              <strong>🎵 Music Integration:</strong> Sample playlists now include YouTube links! 
-              Click the red "📺 Play on YouTube" buttons to listen to actual songs. 
-              You can also use the music player to browse through playlists.
+            
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-md">
+              <div className="flex items-start gap-sm">
+                <span className="text-blue-600 text-lg">ℹ️</span>
+                <div className="text-left">
+                  <p className="font-semibold text-blue-800 mb-xs">Music Integration Features:</p>
+                  <ul className="text-sm text-blue-700 space-y-xs">
+                    <li>• Sample playlists include YouTube links for instant playback</li>
+                    <li>• Click the red "📺 Play on YouTube" buttons to listen to actual songs</li>
+                    <li>• Use the music player to browse through playlists seamlessly</li>
+                    <li>• Multi-language support for diverse music experiences</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
+        {/* Playlist Display */}
         <PlaylistDisplay 
           emotion={detectedEmotion} 
           languages={selectedLanguages}

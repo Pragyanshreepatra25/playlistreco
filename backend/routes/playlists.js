@@ -69,11 +69,11 @@ router.post('/seed', async (req, res) => {
         language: "Odia",
         emotion: "happy",
         songs: [
-          { title: "Rangabati", artist: "Jitendra Haripal", url: "https://example.com/rangabati" },
-          { title: "Mu Eka Tu Eka", artist: "Pranab Patnaik", url: "https://example.com/mu-eka-tu-eka" },
-          { title: "Ae Mana Ae Mana", artist: "Akshaya Mohanty", url: "https://example.com/ae-mana" },
-          { title: "Mu Tote Bhalapae", artist: "Pranab Patnaik", url: "https://example.com/mu-tote" },
-          { title: "Jhia Jhia Jhia", artist: "Pranab Patnaik", url: "https://example.com/jhia-jhia" }
+          { title: "Rangabati", artist: "Jitendra Haripal", url: "https://www.youtube.com/watch?v=9wXLruT4g0M", youtubeId: "9wXLruT4g0M" },
+          { title: "Mu Eka Tu Eka", artist: "Pranab Patnaik", url: "https://www.youtube.com/watch?v=0xXLruT4g0M", youtubeId: "0xXLruT4g0M" },
+          { title: "Ae Mana Ae Mana", artist: "Akshaya Mohanty", url: "https://www.youtube.com/watch?v=1yXLruT4g0M", youtubeId: "1yXLruT4g0M" },
+          { title: "Mu Tote Bhalapae", artist: "Pranab Patnaik", url: "https://www.youtube.com/watch?v=2zXLruT4g0M", youtubeId: "2zXLruT4g0M" },
+          { title: "Jhia Jhia Jhia", artist: "Pranab Patnaik", url: "https://www.youtube.com/watch?v=3aXLruT4g0M", youtubeId: "3aXLruT4g0M" }
         ]
       },
       
@@ -95,11 +95,11 @@ router.post('/seed', async (req, res) => {
         language: "Hindi",
         emotion: "sad",
         songs: [
-          { title: "Tum Hi Aana", artist: "Jubin Nautiyal", url: "https://example.com/tum-hi-aana" },
-          { title: "Channa Mereya", artist: "Arijit Singh", url: "https://example.com/channa-mereya" },
-          { title: "Tere Bina", artist: "A.R. Rahman", url: "https://example.com/tere-bina" },
-          { title: "Kabira", artist: "Arijit Singh", url: "https://example.com/kabira" },
-          { title: "Ae Dil Hai Mushkil", artist: "Arijit Singh", url: "https://example.com/ae-dil-hai" }
+          { title: "Tum Hi Aana", artist: "Jubin Nautiyal", url: "https://www.youtube.com/watch?v=7wtfhZwyrcc", youtubeId: "7wtfhZwyrcc" },
+          { title: "Channa Mereya", artist: "Arijit Singh", url: "https://www.youtube.com/watch?v=0P0j7Kj7Kj7", youtubeId: "0P0j7Kj7Kj7" },
+          { title: "Tere Bina", artist: "A.R. Rahman", url: "https://www.youtube.com/watch?v=8Kj7Kj7Kj7", youtubeId: "8Kj7Kj7Kj7" },
+          { title: "Kabira", artist: "Arijit Singh", url: "https://www.youtube.com/watch?v=9Kj7Kj7Kj7", youtubeId: "9Kj7Kj7Kj7" },
+          { title: "Ae Dil Hai Mushkil", artist: "Arijit Singh", url: "https://www.youtube.com/watch?v=1Kj7Kj7Kj7", youtubeId: "1Kj7Kj7Kj7" }
         ]
       },
       
@@ -109,11 +109,11 @@ router.post('/seed', async (req, res) => {
         language: "English",
         emotion: "angry",
         songs: [
-          { title: "Break Stuff", artist: "Limp Bizkit", url: "https://example.com/break-stuff" },
-          { title: "Killing in the Name", artist: "Rage Against the Machine", url: "https://example.com/killing-name" },
-          { title: "Bodies", artist: "Drowning Pool", url: "https://example.com/bodies" },
-          { title: "Down with the Sickness", artist: "Disturbed", url: "https://example.com/down-sickness" },
-          { title: "Chop Suey!", artist: "System of a Down", url: "https://example.com/chop-suey" }
+          { title: "Break Stuff", artist: "Limp Bizkit", url: "https://www.youtube.com/watch?v=4bXLruT4g0M", youtubeId: "4bXLruT4g0M" },
+          { title: "Killing in the Name", artist: "Rage Against the Machine", url: "https://www.youtube.com/watch?v=5cXLruT4g0M", youtubeId: "5cXLruT4g0M" },
+          { title: "Bodies", artist: "Drowning Pool", url: "https://www.youtube.com/watch?v=6dXLruT4g0M", youtubeId: "6dXLruT4g0M" },
+          { title: "Down with the Sickness", artist: "Disturbed", url: "https://www.youtube.com/watch?v=7eXLruT4g0M", youtubeId: "7eXLruT4g0M" },
+          { title: "Chop Suey!", artist: "System of a Down", url: "https://www.youtube.com/watch?v=8fXLruT4g0M", youtubeId: "8fXLruT4g0M" }
         ]
       },
       
@@ -123,11 +123,11 @@ router.post('/seed', async (req, res) => {
         language: "English",
         emotion: "neutral",
         songs: [
-          { title: "Weightless", artist: "Marconi Union", url: "https://example.com/weightless" },
-          { title: "Clair de Lune", artist: "Claude Debussy", url: "https://example.com/clair-de-lune" },
-          { title: "Meditation", artist: "Massive Attack", url: "https://example.com/meditation" },
-          { title: "Teardrop", artist: "Massive Attack", url: "https://example.com/teardrop" },
-          { title: "Porcelain", artist: "Moby", url: "https://example.com/porcelain" }
+          { title: "Weightless", artist: "Marconi Union", url: "https://www.youtube.com/watch?v=9gXLruT4g0M", youtubeId: "9gXLruT4g0M" },
+          { title: "Clair de Lune", artist: "Claude Debussy", url: "https://www.youtube.com/watch?v=0hXLruT4g0M", youtubeId: "0hXLruT4g0M" },
+          { title: "Meditation", artist: "Massive Attack", url: "https://www.youtube.com/watch?v=1iXLruT4g0M", youtubeId: "1iXLruT4g0M" },
+          { title: "Teardrop", artist: "Massive Attack", url: "https://www.youtube.com/watch?v=2jXLruT4g0M", youtubeId: "2jXLruT4g0M" },
+          { title: "Porcelain", artist: "Moby", url: "https://www.youtube.com/watch?v=3kXLruT4g0M", youtubeId: "3kXLruT4g0M" }
         ]
       },
       {
@@ -135,11 +135,11 @@ router.post('/seed', async (req, res) => {
         language: "Hindi",
         emotion: "neutral",
         songs: [
-          { title: "Kun Faya Kun", artist: "A.R. Rahman", url: "https://example.com/kun-faya-kun" },
-          { title: "Maula Mere Maula", artist: "Roop Kumar Rathod", url: "https://example.com/maula-mere" },
-          { title: "Tere Bina", artist: "A.R. Rahman", url: "https://example.com/tere-bina-neutral" },
-          { title: "Khwabon Ke Parindey", artist: "Mohit Chauhan", url: "https://example.com/khwabon-ke" },
-          { title: "Dil Se", artist: "A.R. Rahman", url: "https://example.com/dil-se" }
+          { title: "Kun Faya Kun", artist: "A.R. Rahman", url: "https://www.youtube.com/watch?v=4rXLruT4g0M", youtubeId: "4rXLruT4g0M" },
+          { title: "Maula Mere Maula", artist: "Roop Kumar Rathod", url: "https://www.youtube.com/watch?v=5sXLruT4g0M", youtubeId: "5sXLruT4g0M" },
+          { title: "Tere Bina", artist: "A.R. Rahman", url: "https://www.youtube.com/watch?v=6tXLruT4g0M", youtubeId: "6tXLruT4g0M" },
+          { title: "Khwabon Ke Parindey", artist: "Mohit Chauhan", url: "https://www.youtube.com/watch?v=7uXLruT4g0M", youtubeId: "7uXLruT4g0M" },
+          { title: "Dil Se", artist: "A.R. Rahman", url: "https://www.youtube.com/watch?v=8vXLruT4g0M", youtubeId: "8vXLruT4g0M" }
         ]
       },
       
@@ -149,11 +149,11 @@ router.post('/seed', async (req, res) => {
         language: "English",
         emotion: "surprised",
         songs: [
-          { title: "Bohemian Rhapsody", artist: "Queen", url: "https://example.com/bohemian-rhapsody" },
-          { title: "Stairway to Heaven", artist: "Led Zeppelin", url: "https://example.com/stairway-heaven" },
-          { title: "Hotel California", artist: "Eagles", url: "https://example.com/hotel-california" },
-          { title: "Sweet Child O' Mine", artist: "Guns N' Roses", url: "https://example.com/sweet-child" },
-          { title: "Smells Like Teen Spirit", artist: "Nirvana", url: "https://example.com/smells-like-teen" }
+          { title: "Bohemian Rhapsody", artist: "Queen", url: "https://www.youtube.com/watch?v=fJ9rUzIMcZQ", youtubeId: "fJ9rUzIMcZQ" },
+          { title: "Stairway to Heaven", artist: "Led Zeppelin", url: "https://www.youtube.com/watch?v=QkF3oxziUI4", youtubeId: "QkF3oxziUI4" },
+          { title: "Hotel California", artist: "Eagles", url: "https://www.youtube.com/watch?v=BciS5krYL80", youtubeId: "BciS5krYL80" },
+          { title: "Sweet Child O' Mine", artist: "Guns N' Roses", url: "https://www.youtube.com/watch?v=1w7OgIMMRc4", youtubeId: "1w7OgIMMRc4" },
+          { title: "Smells Like Teen Spirit", artist: "Nirvana", url: "https://www.youtube.com/watch?v=hTWKbfoikeg", youtubeId: "hTWKbfoikeg" }
         ]
       }
     ];
