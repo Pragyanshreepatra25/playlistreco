@@ -10,6 +10,8 @@ function Home({ setAuth }) {
   const [selectedLanguages, setSelectedLanguages] = useState(['English']);
   const [detectedEmotion, setDetectedEmotion] = useState('');
   const [isSeeding, setIsSeeding] = useState(false);
+  const [showFavorites, setShowFavorites] = useState(false);
+  const [favoritesList, setFavoritesList] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,6 +22,25 @@ function Home({ setAuth }) {
     }
   }, []);
 
+  const fetchFavorites = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:5000/api/user/favorites', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setFavoritesList(response.data);
+    } catch (error) {
+      console.error('Error fetching favorites:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (showFavorites) {
+      fetchFavorites();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showFavorites]);
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -29,6 +50,11 @@ function Home({ setAuth }) {
 
   const handleLanguageChange = (languages) => {
     setSelectedLanguages(languages);
+  };
+
+  const handleShowFavorites = () => {
+    setShowFavorites(true);
+    window.scrollTo({ top: 200, behavior: 'smooth' });
   };
 
   const seedSamplePlaylists = async () => {
@@ -51,6 +77,7 @@ function Home({ setAuth }) {
         onLogout={handleLogout} 
         onLanguageChange={handleLanguageChange}
         selectedLanguages={selectedLanguages}
+        onShowFavorites={handleShowFavorites}
       />
       
       <div className="container mx-auto px-lg py-xl">
@@ -134,6 +161,129 @@ function Home({ setAuth }) {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Favorites Section */}
+        <div className="card mb-xl">
+          <div className="flex items-center justify-between mb-lg">
+            <div>
+              <h2 className="card-title">
+                ❤️ My Favorites
+              </h2>
+              <p className="card-subtitle">
+                Your saved playlists
+              </p>
+            </div>
+            <button 
+              onClick={() => setShowFavorites(!showFavorites)}
+              className="btn btn-primary btn-sm"
+            >
+              {showFavorites ? 'Hide' : 'Show'} Favorites
+            </button>
+          </div>
+
+          {showFavorites && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+              {favoritesList.length === 0 ? (
+                <div className="col-span-full text-center py-lg">
+                  <div className="inline-flex flex-col items-center gap-md">
+                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                      <span className="text-2xl">🤍</span>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-700 mb-xs">
+                        No favorites yet
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        Add playlists to your favorites to see them here
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                favoritesList.map((playlist) => (
+                  <div 
+                    key={playlist._id} 
+                    className="card hover:shadow-xl transition-all duration-300 cursor-pointer group relative"
+                  >
+                    {/* Remove Favorite Button */}
+                    <button
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        try {
+                          const token = localStorage.getItem('token');
+                          await axios.delete(`http://localhost:5000/api/user/favorites/${playlist._id}`, {
+                            headers: { Authorization: `Bearer ${token}` }
+                          });
+                          setFavoritesList(favoritesList.filter(p => p._id !== playlist._id));
+                        } catch (error) {
+                          console.error('Error removing favorite:', error);
+                        }
+                      }}
+                      className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 hover:bg-gray-500 transition-all z-10"
+                    >
+                      <span className="text-lg">❌</span>
+                    </button>
+
+                    <div className="flex items-start gap-sm mb-sm">
+                      <div className={`w-10 h-10 bg-gradient-to-br from-red-400 to-red-600 rounded-lg flex items-center justify-center flex-shrink-0`}>
+                        <span className="text-lg">❤️</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-sm text-primary group-hover:text-indigo-600 transition-colors truncate">
+                          {playlist.name}
+                        </h3>
+                        <div className="flex items-center gap-xs mt-xs">
+                          <span className="text-xs text-gray-500">{playlist.language}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mb-sm">
+                      <div className="flex items-center gap-xs text-xs text-secondary mb-xs">
+                        <span>🎵</span>
+                        <span>{playlist.songs?.length || 0} tracks</span>
+                      </div>
+                      
+                      {playlist.songs && playlist.songs.length > 0 && (
+                        <div className="text-xs text-gray-500 truncate">
+                          {playlist.songs[0].title} - {playlist.songs[0].artist}
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-xs">
+                      {playlist.songs && playlist.songs.length > 0 && (playlist.songs[0].url?.includes('youtube.com') || playlist.songs[0].youtubeId) ? (
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const firstSong = playlist.songs[0];
+                            const youtubeUrl = firstSong.url || `https://www.youtube.com/watch?v=${firstSong.youtubeId}`;
+                            window.open(youtubeUrl, '_blank', 'noopener,noreferrer');
+                          }}
+                          className="btn btn-danger btn-sm btn-full"
+                        >
+                          <span>📺</span>
+                          Play on YouTube
+                        </button>
+                      ) : (
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert(`🎵 "${playlist.name}"\n\nThis playlist doesn't have YouTube-enabled songs.`);
+                          }}
+                          className="btn btn-secondary btn-sm btn-full"
+                        >
+                          <span>🎵</span>
+                          Preview
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
         </div>
 
         {/* Playlist Display */}

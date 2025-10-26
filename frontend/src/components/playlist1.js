@@ -8,6 +8,7 @@ function PlaylistDisplay({ emotion, languages }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [currentPlaylist, setCurrentPlaylist] = useState(null);
+  const [favorites, setFavorites] = useState([]);
 
   // Emotion mapping for better recommendations
   const emotionMappings = {
@@ -24,7 +25,45 @@ function PlaylistDisplay({ emotion, languages }) {
     if (emotion && languages.length > 0) {
       fetchPlaylists();
     }
+    fetchFavorites();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [emotion, languages]);
+
+  const fetchFavorites = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:5000/api/user/favorites', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setFavorites(response.data.map(p => p._id || p));
+    } catch (error) {
+      console.error('Error fetching favorites:', error);
+    }
+  };
+
+  const toggleFavorite = async (playlistId, e) => {
+    e.stopPropagation();
+    try {
+      const token = localStorage.getItem('token');
+      
+      if (favorites.includes(playlistId)) {
+        // Remove from favorites
+        await axios.delete(`http://localhost:5000/api/user/favorites/${playlistId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setFavorites(favorites.filter(id => id !== playlistId));
+      } else {
+        // Add to favorites
+        await axios.post(`http://localhost:5000/api/user/favorites/${playlistId}`, {}, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setFavorites([...favorites, playlistId]);
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      alert('Failed to update favorites');
+    }
+  };
 
   const fetchPlaylists = async () => {
     setLoading(true);
@@ -183,66 +222,58 @@ function PlaylistDisplay({ emotion, languages }) {
 
       {/* Playlist Grid */}
       {!loading && !error && playlists.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
           {playlists.map((playlist) => (
             <div 
               key={playlist._id} 
-              className="card hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="card hover:shadow-xl transition-all duration-300 cursor-pointer group relative"
               onClick={() => setCurrentPlaylist(playlist)}
             >
-              {/* Playlist Header */}
-              <div className="flex items-center gap-md mb-md">
-                <div className={`w-12 h-12 bg-gradient-to-br ${getEmotionColor(playlist.emotion)} rounded-xl flex items-center justify-center`}>
-                  <span className="text-xl">{getEmotionEmoji(playlist.emotion)}</span>
+              {/* Favorite Button */}
+              <button
+                onClick={(e) => toggleFavorite(playlist._id, e)}
+                className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 hover:bg-red-500 transition-all z-10"
+              >
+                <span className={`text-lg ${favorites.includes(playlist._id) ? '❤️' : '🤍'}`}>
+                  {favorites.includes(playlist._id) ? '❤️' : '🤍'}
+                </span>
+              </button>
+
+              {/* Playlist Header - Compact */}
+              <div className="flex items-start gap-sm mb-sm">
+                <div className={`w-10 h-10 bg-gradient-to-br ${getEmotionColor(playlist.emotion)} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                  <span className="text-lg">{getEmotionEmoji(playlist.emotion)}</span>
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-lg text-primary group-hover:text-indigo-600 transition-colors">
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-sm text-primary group-hover:text-indigo-600 transition-colors truncate">
                     {playlist.name}
                   </h3>
-                  <div className="flex items-center gap-sm">
-                    <span className={`px-2 py-1 text-xs font-semibold text-white bg-gradient-to-r ${getEmotionColor(playlist.emotion)} rounded-full`}>
+                  <div className="flex items-center gap-xs mt-xs">
+                    <span className={`px-1.5 py-0.5 text-xs font-semibold text-white bg-gradient-to-r ${getEmotionColor(playlist.emotion)} rounded`}>
                       {playlist.emotion.toUpperCase()}
                     </span>
+                    <span className="text-xs text-gray-500">• {playlist.language}</span>
                   </div>
                 </div>
               </div>
               
-              {/* Playlist Info */}
-              <div className="space-y-sm mb-md">
-                <div className="flex items-center gap-sm text-sm text-secondary">
-                  <span>🌍</span>
-                  <span><strong>Language:</strong> {playlist.language}</span>
-                </div>
-                <div className="flex items-center gap-sm text-sm text-secondary">
+              {/* Playlist Info - Compact */}
+              <div className="mb-sm">
+                <div className="flex items-center gap-xs text-xs text-secondary mb-xs">
                   <span>🎵</span>
-                  <span><strong>Songs:</strong> {playlist.songs.length} tracks</span>
+                  <span>{playlist.songs.length} tracks</span>
                 </div>
+                
+                {/* Sample Tracks - Only show first song */}
+                {playlist.songs.length > 0 && (
+                  <div className="text-xs text-gray-500 truncate">
+                    {playlist.songs[0].title} - {playlist.songs[0].artist}
+                  </div>
+                )}
               </div>
               
-              {/* Sample Tracks */}
-              {playlist.songs.length > 0 && (
-                <div className="mb-md">
-                  <p className="text-sm font-medium text-gray-600 mb-sm">
-                    Sample tracks:
-                  </p>
-                  <div className="space-y-xs">
-                    {playlist.songs.slice(0, 3).map((song, index) => (
-                      <div key={index} className="text-sm text-gray-600 flex items-center gap-sm">
-                        <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
-                        <span className="truncate">{song.title} - {song.artist}</span>
-                      </div>
-                    ))}
-                    {playlist.songs.length > 3 && (
-                      <div className="text-xs text-gray-500 italic">
-                        ... and {playlist.songs.length - 3} more
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-              
-              {/* Action Buttons */}
-              <div className="space-y-sm">
+              {/* Action Buttons - Compact */}
+              <div className="space-y-xs">
                 {/* Main Play Button - Always YouTube */}
                 {playlist.songs.length > 0 && (playlist.songs[0].url?.includes('youtube.com') || playlist.songs[0].youtubeId) ? (
                   <button 
@@ -252,10 +283,10 @@ function PlaylistDisplay({ emotion, languages }) {
                       const youtubeUrl = firstSong.url || `https://www.youtube.com/watch?v=${firstSong.youtubeId}`;
                       window.open(youtubeUrl, '_blank', 'noopener,noreferrer');
                     }}
-                    className="btn btn-danger btn-full"
+                    className="btn btn-danger btn-sm btn-full"
                   >
                     <span>📺</span>
-                    Play First Song on YouTube
+                    Play on YouTube
                   </button>
                 ) : (
                   <button 
@@ -263,24 +294,12 @@ function PlaylistDisplay({ emotion, languages }) {
                       e.stopPropagation();
                       alert(`🎵 "${playlist.name}"\n\nThis playlist doesn't have YouTube-enabled songs. Please check other playlists for YouTube integration.`);
                     }}
-                    className="btn btn-secondary btn-full"
+                    className="btn btn-secondary btn-sm btn-full"
                   >
                     <span>🎵</span>
-                    Playlist Preview
+                    Preview
                   </button>
                 )}
-                
-                {/* Open Music Player */}
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setCurrentPlaylist(playlist);
-                  }}
-                  className="btn btn-primary btn-full btn-sm"
-                >
-                  <span>🎧</span>
-                  Open Player
-                </button>
               </div>
             </div>
           ))}

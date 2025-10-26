@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const Playlist = require('../models/playlist');
 const jwt = require('jsonwebtoken');
 
 // Middleware to verify token
@@ -40,6 +41,57 @@ router.put('/profile', authMiddleware, async (req, res) => {
     ).select('-password');
     
     res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get user favorites
+router.get('/favorites', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).populate('favorites');
+    res.json(user.favorites || []);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Add to favorites
+router.post('/favorites/:playlistId', authMiddleware, async (req, res) => {
+  try {
+    const { playlistId } = req.params;
+    const user = await User.findById(req.userId);
+    
+    // Check if playlist exists
+    const playlist = await Playlist.findById(playlistId);
+    if (!playlist) {
+      return res.status(404).json({ message: 'Playlist not found' });
+    }
+    
+    // Check if already in favorites
+    if (user.favorites.includes(playlistId)) {
+      return res.status(400).json({ message: 'Playlist already in favorites' });
+    }
+    
+    user.favorites.push(playlistId);
+    await user.save();
+    
+    res.json({ message: 'Added to favorites', favorites: user.favorites });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Remove from favorites
+router.delete('/favorites/:playlistId', authMiddleware, async (req, res) => {
+  try {
+    const { playlistId } = req.params;
+    const user = await User.findById(req.userId);
+    
+    user.favorites = user.favorites.filter(id => id.toString() !== playlistId);
+    await user.save();
+    
+    res.json({ message: 'Removed from favorites', favorites: user.favorites });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }

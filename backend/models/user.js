@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   name: { type: String },
   profilePic: { type: String },
   languages: [{ type: String }],
+  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Playlist' }],
   createdAt: { type: Date, default: Date.now }
 });
 

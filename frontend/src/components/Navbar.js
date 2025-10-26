@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function Navbar({ user, onLogout, onLanguageChange, selectedLanguages }) {
+function Navbar({ user, onLogout, onLanguageChange, selectedLanguages, onShowFavorites }) {
   const [showProfile, setShowProfile] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const languages = ['Odia', 'Hindi', 'English'];
@@ -50,7 +50,7 @@ function Navbar({ user, onLogout, onLanguageChange, selectedLanguages }) {
                 Search
               </button>
               
-              <button className="btn btn-secondary btn-sm">
+              <button className="btn btn-secondary btn-sm" onClick={onShowFavorites}>
                 <span>❤️</span>
                 Favorites
               </button>
